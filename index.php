@@ -19,7 +19,7 @@ function getItemsNum() {
 <html lang="en">
     <head>
         <meta charset="UTF-8"/>
-        <title>Document</title>
+        <title>Dudi online</title>
         <link href="css/index.css" rel="stylesheet"/>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     </head>
