@@ -1,8 +1,8 @@
 <?php
 session_start();
 include "../includes/connection.php";
-ini_set('display_errors', 'On');
-error_reporting(E_ALL);
+/* ini_set('display_errors', 'On');
+ * error_reporting(E_ALL); */
 if($conn) {
     if($_POST['address']) {
 
@@ -19,7 +19,7 @@ if($conn) {
 
 
         $compareBirthDate = date_create($_POST['birthDate']);
-        $currentDate = date_create(date('m-d-Y'));
+        $currentDate = date_create(date('m/d/Y'));
         $diff = date_diff($compareBirthDate, $currentDate);
         $age = $diff->format('%y');
         if($age < 18) {

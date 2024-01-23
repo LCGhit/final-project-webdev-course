@@ -50,5 +50,5 @@ document.addEventListener("scroll", () => {
 });
 
 document.getElementById('addBtn').addEventListener('click', () => {
-    document.querySelector('tbody').lastChild.style.display = 'block';
+    document.getElementById('tableBody').lastChild.style.display = 'block';
 });

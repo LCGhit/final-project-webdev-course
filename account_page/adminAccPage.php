@@ -15,48 +15,63 @@ session_start();
     <?php
     include_once "../includes/connection.php";
     if($conn) {
-        $purchases_num = mysqli_query($conn, sprintf("select e.id from Encomendas e WHERE user='%s' GROUP BY e.id;", $_SESSION['loggedUser']['username']));
-        while($row = mysqli_fetch_assoc($purchases_num)) {
-            $pNum[] = $row;
+        $usersNames = [];
+        $userNumber = mysqli_query($conn, "select username from Utilizadores;");
+        while($row = mysqli_fetch_assoc($userNumber)) {
+            $usersNames[] = $row['username'];
         }
-        foreach($pNum as $array) {
-            foreach($array as $value) {
-                echo "<table class='purchasesTable'>";
-                echo "<thead>";
-                $purchases_query = sprintf("SELECT e.id as 'purchase ID', p.name as 'item', p.price*i.quantity as price, i.quantity, p.picture FROM Produtos p INNER JOIN encomenda_info i ON i.product = p.id INNER JOIN Encomendas e ON e.id = i.encomenda WHERE e.id='%s';", $value);
-                $get_purchases = mysqli_query($conn, $purchases_query);
-                $new_get_purchases = mysqli_query($conn, $purchases_query);
-                echo "<tr>";
-                foreach(mysqli_fetch_assoc($new_get_purchases) as $key => $value) {
-                    if($key === 'picture') {
-                        echo "<th></th>";
-                    } else {
-                        echo "<th>".$key."</th>";
-                    }
+        foreach($usersNames as $userIteration) {
+            if(mysqli_query($conn, "SELECT id FROM Encomendas WHERE user='".$userIteration."';") != false) {
+                $purchases_num = mysqli_query($conn, sprintf("select e.id from Encomendas e WHERE user='%s';", $userIteration));
+                while($row = mysqli_fetch_assoc($purchases_num)) {
+                    $pNum[] = $row;
                 }
-                echo "</tr></thead>";
-                echo "<tbody>";
-                while($row = mysqli_fetch_assoc($get_purchases)) {
-                    echo "<tr>";
-                    foreach($row as $key => $value) {
-                        if($key==='picture') {
-                            echo "<td><img src='../".$value."'/></td>";
-                        } elseif($key==='total'){
+                foreach($pNum as $array) {
+                    if($pNum[0] === $array) {
+                        echo "<span id='purchasesUser'>".$userIteration." (".count($pNum).")</span>";
+                    }
+                    foreach($array as $value) {
+                        echo "<table class='purchasesTable'>";
+                        echo "<thead>";
+                        $purchases_query = sprintf("SELECT e.id as 'purchase ID', p.name as 'item', p.price*i.quantity as price, i.quantity, p.picture FROM Produtos p INNER JOIN encomenda_info i ON i.product = p.id INNER JOIN Encomendas e ON e.id = i.encomenda WHERE e.id='%s';", $value);
+                        $get_purchases = mysqli_query($conn, $purchases_query);
+                        $new_get_purchases = mysqli_query($conn, $purchases_query);
+                        echo "<tr>";
+                        foreach(mysqli_fetch_assoc($new_get_purchases) as $key => $value) {
+                            if($key === 'picture') {
+                                echo "<th></th>";
+                            } else {
+                                echo "<th>".$key."</th>";
+                            }
+                        }
+                        echo "</tr></thead>";
+                        echo "<tbody>";
+                        while($row = mysqli_fetch_assoc($get_purchases)) {
+                            echo "<tr>";
+                            foreach($row as $key => $value) {
+                                if($key==='picture') {
+                                    echo "<td><img src='../".$value."'/></td>";
+                                } elseif($key==='total'){
 
+                                }
+                                else {
+                                    echo "<td>".$value."</td>";
+                                }
+                            }
+                            echo "</tr>";
                         }
-                        else {
-                            echo "<td>".$value."</td>";
-                        }
-                    }
-                    echo "</tr>";
-                }
-                echo <<<lastRow
+                        echo <<<lastRow
                 <tr>
                 <td></td>
                 </tr>
                 </tbody>
                 </table>
 lastRow;
+                    }
+                }
+                unset($pNum);
+            } else {
+                continue;
             }
         }
     }
@@ -86,7 +101,7 @@ lastRow;
     <th>stock</th>
     <th></th>
     </tr></thead>
-    <tbody>
+    <tbody id="tableBody">
     openTable;
     if($conn) {
         $productsQuery = mysqli_query($conn, "SELECT * FROM Produtos;");

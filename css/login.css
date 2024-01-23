@@ -269,3 +269,13 @@ td img {
     display: none;
     transition: 200ms;
 }
+
+#purchasesUser {
+    color: rgb(242, 242, 242);
+    background-image: linear-gradient(to right, rgb(52, 96, 229), rgb(174, 196, 214));
+    padding: .2em;
+    text-align: start;
+    margin-top: 1.5em;
+    margin-left: .5em;
+    font-size: 1.2em;
+}
